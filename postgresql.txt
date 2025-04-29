@@ -1,0 +1,5 @@
+host: localhost (endereço do servidor do banco)
+database: (banco de dados)
+super-user: postgres
+password 12345
+port: 5432 (porta padrão)
