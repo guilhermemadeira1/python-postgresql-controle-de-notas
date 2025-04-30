@@ -1,8 +1,9 @@
 import tkinter as tk
 from tkinter import ttk
 
-from Aluno import Aluno
-from AlunoCRUD import AlunoCRUD
+from sistemaCRUD import Aluno
+from sistemaCRUD import AlunoCRUD
+from sistemaCRUD import BancoDeDados
 
 def exibirDados():
     matricula = entrada_matricula.get()
@@ -16,8 +17,14 @@ def exibirDados():
 if __name__ == "__main__":
 
     # conexao com o banco
+    banco = BancoDeDados()
+    banco.criar_tabelas()
+    banco.inserir_cursos()
+
     crud = AlunoCRUD()
-    crud.criar_tabela()
+
+    aluno1 = Aluno(matricula=1221, nome="Joao", nota1=12.1, nota2=21.2)
+    crud.matricular_aluno(matricula_aluno=aluno1.matricula,curso=1)
 
     # interface tkinter
     root = tk.Tk() 

@@ -1,4 +1,5 @@
-from AlunoCRUD import AlunoCRUD
+from sistemaCRUD.AlunoCRUD import AlunoCRUD
+from sistemaCRUD.Aluno import Aluno, Curso
 
 crud = AlunoCRUD()
 
