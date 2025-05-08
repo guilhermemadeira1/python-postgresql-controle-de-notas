@@ -1,5 +1,5 @@
 from sistemaCRUD.AlunoCRUD import AlunoCRUD
-from sistemaCRUD.Aluno import Aluno, Curso
+from sistemaCRUD.Aluno import Aluno
 
 crud = AlunoCRUD()
 
@@ -24,12 +24,18 @@ while True:
                 print("Registro feito com sucesso!")
                 print(f" > Matricula: {matricula}\n > Nome: {nome}\n > Nota 1: {nota1}\n > Nota 2: {nota2}")
         case 2:
-            listagem = crud.buscar_todos()
+            listagem = crud.buscar_todos_alunos()
+            alunos = []
             print("[LISTAGEM DE ALUNOS]")
             if listagem:
-                print("MATRICULA\tNOME\tNOTA1\tNOTA2")
+                print("MATRICULA\tNOME\t\t\tCURSO\t\tNOTA1\t\tNOTA2\t\tMEDIA\t\tSITUACAO")
+                for tupla in listagem:
+                    aluno = Aluno(tupla[0],tupla[1],tupla[2],tupla[3],tupla[4])
+                    media = aluno.calcular_media()
+                    situacao = aluno.verificar_situacao()
+
                 for aluno in listagem:
-                    print(f"{aluno[0]}\t\t{aluno[1]}\t{aluno[2]}\t{aluno[3]}")
+                    print(f"{aluno[0]}\t\t{aluno[1]}\t\t{aluno[2]}\t\t{aluno[3]}\t\t{aluno[4]}\t\t{media}\t\t{situacao}")
         case 3:
             print("[ATUALIZAR NOTAS]")
             matricula = int(input("Digite a matricula do aluno que será atualizado:"))

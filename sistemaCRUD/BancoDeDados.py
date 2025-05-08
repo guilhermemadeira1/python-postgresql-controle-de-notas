@@ -36,17 +36,10 @@ class BancoDeDados:
 		         		matricula SERIAL PRIMARY KEY,
 		          		nome VARCHAR(100) NOT NULL,
 				   		curso INT NOT NULL,
-		          		nota1 DECIMAL(3,2) DEFAULT 0.0 NOT NULL,
-		        		nota2 DECIMAL(3,2) DEFAULT 0.0 NOT NULL,
+		          		nota1 DECIMAL(2,1) DEFAULT 0.0 NOT NULL,
+		        		nota2 DECIMAL(2,1) DEFAULT 0.0 NOT NULL,
 				   		FOREIGN KEY(curso) REFERENCES cursos(id_curso)
 		     	 	);
-				    CREATE TABLE IF NOT EXISTS aluno_curso(
-				   		matricula_aluno INT,
-				        id_curso INT, 
-				   		PRIMARY KEY(matricula_aluno,id_curso),
-				   		FOREIGN KEY(matricula_aluno) REFERENCES alunos(matricula),
-				   		FOREIGN KEY(id_curso) REFERENCES cursos(id_curso)
-				   	);
 				   """
 		   	 	)
 				conexao.commit()
@@ -86,3 +79,21 @@ class BancoDeDados:
 		finally:
 			if conexao:
 				conexao.close()
+
+	def tabela_cursos_vazia(self):
+		try:
+			conexao = self.obter_conexao()
+			with conexao.cursor() as cursor:
+				cursor.execute("SELECT * FROM CURSOS")
+				resultado = cursor.fetchone()
+
+				if(resultado is None):
+					return True
+				else:
+					return False
+				
+		except psycopg2.Error as e:
+			print(f"Erro ao verificar tabela cursos: {e}")
+			
+		finally:
+			conexao.close()

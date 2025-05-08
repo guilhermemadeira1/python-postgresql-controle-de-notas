@@ -11,12 +11,15 @@ class Aluno:
 		return (self.nota1+self.nota2)/2
 	
 	def verificar_situacao(self):
-		media = self.calcular_media()
-
-		if media >=6:
-			return "APROVADO"
-		elif media >=4:
-			return "RECUPERACAO"
+		if self.nota1 and self.nota2:
+			media = self.calcular_media()
+			if media >=6:
+				return "APROVADO"
+			elif media >=4:
+				return "RECUPERACAO"
+			else:
+				return "REPROVADO"
 		else:
-			return "REPROVADO"
+			return ""
+		
 

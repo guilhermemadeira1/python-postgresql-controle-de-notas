@@ -27,6 +27,7 @@ class AlunoCRUD:
 				insert = "INSERT INTO alunos(nome, curso) VALUES (%s, %s);"
 				cursor.execute(insert,(nome, curso))
 				conexao.commit()
+				print("Aluno registrado com suceso!")
 				return True
 
 		except psycopg2.Error as e:
@@ -46,6 +47,8 @@ class AlunoCRUD:
 				if cursor.rowcount == 0: # se a quantidade de registros afetados no banco de dados for 0
 					print("Nenhum registro foi deletado.")
 					return False
+				
+				print("Aluno removido com suceso!")
 				conexao.commit()
 			return True
 		
@@ -62,7 +65,7 @@ class AlunoCRUD:
 			conexao = self.obter_conexao()
 			with conexao.cursor() as cursor:
 				select = """SELECT a.matricula, a.nome, c.nome, a.nota1, a.nota2 
-						 	FROM alunos a JOIN curso c ON a.curso = c.id_curso
+						 	FROM alunos a JOIN cursos c ON a.curso = c.id_curso
 							WHERE matricula = %s;
 						 """
 				cursor.execute(select,(matricula,))
@@ -81,11 +84,13 @@ class AlunoCRUD:
 				conexao.close()
 
 	# buscar todos os registros de alunos
-	def buscar_todos(self):
+	def buscar_todos_alunos(self):
 		try:
 			conexao = self.obter_conexao()
 			with conexao.cursor() as cursor:
-				select = "SELECT * FROM alunos"
+				select = """SELECT a.matricula, a.nome, c.nome, a.nota1, a.nota2 
+						 	FROM alunos a JOIN cursos c ON a.curso = c.id_curso
+						"""
 				cursor.execute(select)
 				resultado = cursor.fetchall()
 				if resultado:
@@ -95,7 +100,7 @@ class AlunoCRUD:
 				
 		except psycopg2.Error as e:
 			print(f"Erro ao realizar a busca: {e}")
-			return False
+			return None
 
 		finally:
 			if conexao:
@@ -112,7 +117,7 @@ class AlunoCRUD:
 				if cursor.rowcount == 0: # se a quantidade de registros afetados no banco de dados for 0
 					print("Nenhum registro foi encontrado para atualizar.")
 					return False
-				
+				print("Notas atualizadas com sucesso!")
 				conexao.commit()
 			return True
 
@@ -124,65 +129,46 @@ class AlunoCRUD:
 			if conexao:
 				conexao.close()
 
-	def matricular_aluno(self, matricula_aluno, curso):
+	def buscar_curso(self, id_curso):
 		try:
 			conexao = self.obter_conexao()
 			with conexao.cursor() as cursor:
-				update = "INSERT INTO aluno_curso(matricula_aluno, id_curso) VALUES (%s,%s);"
-				cursor.execute(update,(matricula_aluno,curso))
-				conexao.commit()
-				return True
+				select = "SELECT nome FROM CURSOS WHERE id_curso = %s"
+				cursor.execute(select,(id_curso,))
+				return cursor.fetchone() # retorna o id da tupla do curso
+				
 		except psycopg2.Error as e:
-			print(f"Erro ao matricular o aluno ao curso: {e}")
-			return False
-
+			print(f"Erro ao buscar os cursos: {e}")
+			
 		finally:
 			conexao.close()
 
-if __name__ == "__main__":
-	crud = AlunoCRUD()
+	# buscar todos os cursos
+	def buscar_cursos(self):
+		try:
+			conexao = self.obter_conexao()
+			with conexao.cursor() as cursor:
+				cursor.execute("SELECT * FROM CURSOS")
+				return cursor.fetchall() # retorna lista de cursos
+				
+		except psycopg2.Error as e:
+			print(f"Erro ao buscar os cursos: {e}")
+			
+		finally:
+			conexao.close()
 
-while True:
-    print("== Sistema de controle de notas ==")
-    print("\t> Digite 1 para registar aluno")
-    print("\t> Digite 2 para listar alunos")
-    print("\t> Digite 3 para atualizar notas")
-    print("\t> Digite 4 para deletar aluno")
-    print("\t> Digite x para encerrar o programa\n")
-    escolha = input("Qual operação deseja realizar? ")
+	# buscar id do curso pelo nome
+	def buscar_id_curso(self, nome_curso):
+		try:
+			conexao = self.obter_conexao()
+			with conexao.cursor() as cursor:
+				select = "SELECT id_curso FROM CURSOS WHERE nome = %s"
+				cursor.execute(select,(nome_curso,))
+				return cursor.fetchone() # retorna o id da tupla do curso
+				
+		except psycopg2.Error as e:
+			print(f"Erro ao buscar os cursos: {e}")
+			
+		finally:
+			conexao.close()
 
-    match escolha:
-        case "1":
-            print("[REGISTRO DE ALUNO]")
-            matricula = int(input("Digite a matricula: "))
-            nome = input("Digite o nome: ")
-            nota1 = float(input("Digite a nota 1: "))
-            nota2 = float(input("Digite a nota 2: "))
-        
-            if(crud.registrar_aluno(matricula, nome, nota1, nota2)):
-                print("Registro feito com sucesso!")
-                print(f" > Matricula: {matricula}\n > Nome: {nome}\n > Nota 1: {nota1}\n > Nota 2: {nota2}")
-        case "2":
-            listagem = crud.buscar_todos()
-            print("[LISTAGEM DE ALUNOS]")
-            if listagem:
-                print("MATRICULA\tNOME\tNOTA1\tNOTA2")
-                for aluno in listagem:
-                    print(f"{aluno[0]}\t\t{aluno[1]}\t{aluno[2]}\t{aluno[3]}")
-        case "3":
-            print("[ATUALIZAR NOTAS]")
-            matricula = int(input("Digite a matricula do aluno que será atualizado:"))
-            nota1 = float(input("Digite a nota1: "))
-            nota2 = float(input("Digite a nota2: "))
-            if(crud.deletar_aluno(matricula,nota1,nota2)):
-                print("Atualização realizada com sucesso!")
-        case "4":
-            print("[REMOÇÂO DE ALUNO]")
-            matricula = int(input("Digite a matricula do aluno que será removido: "))
-            if(crud.deletar_aluno(matricula)):
-                print("Aluno removido com sucesso!")
-
-        case "x": break
-            
-
-        
