@@ -1,6 +1,0 @@
-1 Joao História 4.5 9.8
-9 Maria Língua portuguesa 2.5 1.8
-10 Marta História 7.5 9.8
-13 Geronimo Biologia 10.0 10.0
-12 Julio Biologia 8.5 10.0
-11 Samuel Química 8.0 9.0
