@@ -1,0 +1,1 @@
+pyinstaller --onefile --windowed --icon=meu_icone.ico meu_script.py

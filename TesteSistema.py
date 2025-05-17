@@ -1,4 +1,4 @@
-from sistemaCRUD.AlunoCRUD import AlunoCRUD
+from sistema_de_notas.sistemaCRUD.CRUD import AlunoCRUD
 from sistemaCRUD.Aluno import Aluno
 
 crud = AlunoCRUD()
