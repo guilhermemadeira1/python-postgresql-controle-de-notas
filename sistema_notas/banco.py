@@ -216,6 +216,7 @@ class Banco:
 		except psycopg2.Error as e:
 			print(f"Erro ao buscar o aluno: {e}")
 			return None
+
 		finally:
 			if conexao:
 				conexao.close()
